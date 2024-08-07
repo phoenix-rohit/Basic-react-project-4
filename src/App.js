@@ -32,20 +32,42 @@ export default function App() {
 }
 
 function Accordian({ data }) {
+  const [curOpen, setCurOpen] = useState(null);
+
   return (
     <div className="flex flex-col gap-y-10">
       {data.map((item, idx, arr) => (
-        <Item item={item} num={idx} key={item.question} />
+        <Item
+          question={item.question}
+          curOpen={curOpen}
+          onOpen={setCurOpen}
+          num={idx}
+          key={item.question}
+        >
+          {item.answer}
+        </Item>
       ))}
+      <Item
+        question="How to become more expert ?"
+        curOpen={curOpen}
+        onOpen={setCurOpen}
+        num={23}
+        key="man"
+      >
+        <p>Here are the answer in steps: </p>
+        <ol className="list-decimal">
+          <li>Practice</li>
+        </ol>
+      </Item>
     </div>
   );
 }
 
-function Item({ item, num }) {
-  const [isOpen, setIsOpen] = useState(false);
+function Item({ question, num, curOpen, onOpen, children }) {
+  let isOpen = num === curOpen;
 
   function handleToggle(e) {
-    setIsOpen((is) => !is);
+    onOpen(isOpen ? null : num);
   }
 
   return (
@@ -56,10 +78,10 @@ function Item({ item, num }) {
       onClick={handleToggle}
     >
       <p className="text-xl">{num < 10 ? `0${num + 1}` : num}</p>
-      <p className="text-xl">{item.question}</p>
+      <p className="text-xl">{question}</p>
       <button>{isOpen ? "➖" : "➕"}</button>
       {isOpen && (
-        <p className="text-gray-800 text-md  col-start-2">{item.answer}</p>
+        <p className="text-gray-800 text-md  col-start-2">{children}</p>
       )}
     </div>
   );
